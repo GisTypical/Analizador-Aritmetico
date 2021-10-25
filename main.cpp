@@ -1,17 +1,54 @@
-#include <iostream>
+// ANALIZADOR ARITMETICO
 
+#include<iostream>
+#include<fstream>
 using namespace std;
 
-int main()
+struct Expresion
 {
+    string ini;
+    string cuerpo;
+    string fin;
+} e;
 
-  string expression;
 
-  cout << "Ingrese la expresión: ";
+int main(int argc, char const *argv[])
+{
+    string expresion;
 
-  getline(cin, expression);
+    cout << "Ingrese una expresion: ";
+    getline(cin, expresion);
 
-  cout << "Hacer algo con: " << expression;
+    int si_ini = expresion.find("ini");
+    int si_llave_iz = expresion.find("{");
+    int si_llave_der = expresion.find("}");
+    int si_fin = expresion.find("fin");
 
-  return 0;
+    size_t npos = string::npos;
+
+    if (si_ini != npos and si_llave_iz != npos and si_llave_der != npos and si_fin != npos)
+    {
+        e.ini = expresion.substr(si_ini, 3);
+        e.cuerpo = expresion.substr(si_llave_iz, expresion.size() - 8);
+        e.fin = expresion.substr(si_fin);
+
+        cout << e.ini << endl << e.cuerpo << endl << e.fin << endl;
+
+        ofstream archivo;
+
+        archivo.open("tokens.txt", ios::out);
+
+        archivo << e.ini << " = PALABRA RESERVADA ini" << endl;
+        archivo << e.cuerpo << " = EXPRESION" << endl;
+        archivo << e.fin << " = PALABRA RESERVADA fin" << endl;
+
+        archivo.close();
+    }
+    else
+    {
+        cout << "Not found\n";
+    }
+
+    return 0;
 }
+

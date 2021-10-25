@@ -36,11 +36,11 @@ int main(int argc, char const *argv[])
 
         ofstream archivo;
 
-        archivo.open("tokens.txt", ios::out);
+        archivo.open("Ltokens.txt", ios::out);
 
-        archivo << e.ini << " = PALABRA RESERVADA ini" << endl;
-        archivo << e.cuerpo << " = EXPRESION" << endl;
-        archivo << e.fin << " = PALABRA RESERVADA fin" << endl;
+        archivo << e.ini << "\tPALABRA RESERVADA" << endl;
+        archivo << e.cuerpo << "\tEXPRESION" << endl;
+        archivo << e.fin << "\tPALABRA RESERVADA" << endl;
 
         archivo.close();
     }

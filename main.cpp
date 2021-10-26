@@ -7,10 +7,8 @@
 
 using namespace std;
 
-
 //^ PROTOTYPE
 bool analizarExp(vector<string> arr);
-
 
 //^ MAIN
 int main(int argc, char const *argv[])
@@ -119,7 +117,6 @@ int main(int argc, char const *argv[])
     return 0;
 }
 
-
 //^ DEFINITION
 bool analizarExp(vector<string> arr)
 {
@@ -137,7 +134,7 @@ bool analizarExp(vector<string> arr)
     {
         if (tipo == "parA")
         {
-            if (nParA < 0 || anteriorNum)
+            if (nParA < 0 || !anteriorOp)
             {
                 return false;
             }

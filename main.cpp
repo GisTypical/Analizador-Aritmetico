@@ -21,7 +21,6 @@ int main(int argc, char const *argv[])
 {
     string expresion = "";
     regex r("(ini)\\s?(\\{)\\s?([a-zA-Z_]+\\d*)\\s?(=)\\s?(.+)\\s?(;)\\s?(\\})\\s?(fin)");
-    // regex r ("(ini)\\s?(\\{)\\s?([a-zA-Z_]+\\d*)\\s?(=)\\s?((\\(?\\d+[\\+\\-\\*\\/\\^]*\\d*\\)?[\\+\\-\\*\\/\\^]?)+)\\s?(;)\\s?(\\})\\s?(fin)");
     smatch match;
 
     vector<string> tokensExp;

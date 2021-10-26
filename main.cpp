@@ -26,7 +26,6 @@ int main(int argc, char const *argv[])
 
         archivo << "\t\t.:TOKENS:.\n\n";
         cout << "\t\t.:TOKENS:.\n\n";
-        cout << match.str(5) << endl << endl;
 
         for (int i = 1; i < match.size(); i++)
         {

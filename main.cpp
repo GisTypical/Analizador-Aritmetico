@@ -3,8 +3,18 @@
 #include <iostream>
 #include <fstream>
 #include <regex>
+#include <vector>
+
 using namespace std;
 
+struct Expresion
+{
+    string ini;
+    string cuerpo;
+    string fin;
+} e;
+
+bool analizarExp(string cuerpo);
 
 //^ MAIN
 int main(int argc, char const *argv[])
@@ -93,4 +103,73 @@ int main(int argc, char const *argv[])
     }
 
     return 0;
+}
+
+bool analizarExp(vector<string> arr)
+{
+    bool anteriorOp = false;   // Anterior Operador?
+    bool anteriorNum = false;  // Anterior Numero?
+    bool anteriorParA = false; // Anterior Parentesis Abierto?
+    int nParA = 0;             // Número de paréntesis abiertos
+
+    if (arr[0] == "op" || arr.back() == "op")
+    {
+        return false;
+    }
+
+    for (string tipo : arr)
+    {
+        if (tipo == "parA")
+        {
+            if (nParA < 0 || anteriorNum)
+            {
+                return false;
+            }
+            nParA++;
+            anteriorParA = true;
+            anteriorNum = false;
+            anteriorOp = false;
+        }
+        if (tipo == "parC")
+        {
+            if (anteriorParA || anteriorOp)
+            {
+                return false;
+            }
+            nParA--;
+            anteriorParA = false;
+            anteriorNum = false;
+            anteriorOp = false;
+        }
+        if (tipo == "op")
+        {
+            if (anteriorOp || anteriorParA)
+            {
+                return false;
+            }
+            anteriorOp = true;
+            anteriorNum = false;
+            anteriorParA = false;
+        }
+        if (tipo == "num")
+        {
+            if (anteriorNum)
+            {
+                return false;
+            }
+            anteriorNum = true;
+            anteriorOp = false;
+            anteriorParA = false;
+        }
+    }
+    if (anteriorParA || anteriorOp)
+    {
+        return false;
+    }
+    if (nParA != 0)
+    {
+        return false;
+    }
+
+    return true;
 }

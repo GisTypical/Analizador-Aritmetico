@@ -29,29 +29,24 @@ int main(int argc, char const *argv[])
         archivo.open("Ltokens.txt", ios::out);
 
         archivo << "\t\t.:TOKENS:.\n\n";
-        cout << "\t\t.:TOKENS:.\n\n";
 
         for (int i = 1; i < match.size(); i++)
         {
             if (match.str(i) == "ini" or match.str(i) == "fin")
             {
                 archivo << match.str(i) << "\t\t\t\tPALABRA RESERVADA\n";
-                cout << match.str(i) << "\t\t\t\tPALABRA RESERVADA\n";
             }
             else if (match.str(i) == "{" or match.str(i) == ";" or match.str(i) == "}")
             {
                 archivo << match.str(i) << "\t\t\t\tSIMBOLO ESPECIAL\n";
-                cout << match.str(i) << "\t\t\t\tSIMBOLO ESPECIAL\n";
             }
             else if (match.str(i) == "=")
             {
                 archivo << match.str(i) << "\t\t\t\tASIGNACION\n";
-                cout << match.str(i) << "\t\t\t\tASIGNACION\n";
             }
             else if (i == 3)
             {
                 archivo << match.str(i) << "\t\t\t\tIDENTIFICADOR\n";
-                cout << match.str(i) << "\t\t\t\tIDENTIFICADOR\n";
             }
             else if (i == 5)
             {
@@ -62,13 +57,11 @@ int main(int argc, char const *argv[])
                     if (cuerpo[j] == '+' or cuerpo[j] == '-' or cuerpo[j] == '*' or cuerpo[j] == '/' or cuerpo[j] == '^')
                     {
                         archivo << cuerpo[j] << "\t\t\t\tOPERADOR ARIMETICO\n";
-                        cout << cuerpo[j] << "\t\t\t\tOPERADOR ARIMETICO\n";
                         tokensExp.push_back("op");
                     }
                     else if (cuerpo[j] == '(' or cuerpo[j] == ')')
                     {
                         archivo << cuerpo[j] << "\t\t\t\tSIMBOLO ESPECIAL\n";
-                        cout << cuerpo[j] << "\t\t\t\tSIMBOLO ESPECIAL\n";
                         if (cuerpo[j] == '(')
                         {
                             tokensExp.push_back("parA");
@@ -91,7 +84,6 @@ int main(int argc, char const *argv[])
                             j++;
                         }
                         archivo << num << "\t\t\t\tNUMERO\n";
-                        cout << num << "\t\t\t\tNUMERO\n";
                         tokensExp.push_back("num");
                         j--;
                     }
@@ -111,7 +103,7 @@ int main(int argc, char const *argv[])
     }
     else
     {
-        cout << "CADENA INVALIDA\n";
+        cout << "\nX CADENA NO VALIDA X\n\n";
     }
 
     return 0;
@@ -125,6 +117,7 @@ bool analizarExp(vector<string> arr)
     bool anteriorParA = false; // Anterior Parentesis Abierto?
     int nParA = 0;             // Número de paréntesis abiertos
 
+    // Verificar que no comience con un operador
     if (arr[0] == "op" || arr.back() == "op")
     {
         return false;
@@ -134,7 +127,7 @@ bool analizarExp(vector<string> arr)
     {
         if (tipo == "parA")
         {
-            if (nParA < 0 || !anteriorOp)
+            if (nParA < 0 || anteriorNum)
             {
                 return false;
             }
@@ -179,10 +172,14 @@ bool analizarExp(vector<string> arr)
     {
         return false;
     }
+
+    /**
+     * Si el número de parentesis abiertos es distinto a 0
+     * Hubo un paréntesis que no se cerró o que no se abrió
+    **/
     if (nParA != 0)
     {
         return false;
     }
-
     return true;
 }

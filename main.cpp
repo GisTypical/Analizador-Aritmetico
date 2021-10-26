@@ -1,7 +1,10 @@
 // ANALIZADOR ARITMETICO
 
-#include<iostream>
-#include<fstream>
+#include <iostream>
+#include <fstream>
+#include <regex>
+#include <vector>
+
 using namespace std;
 
 struct Expresion
@@ -11,6 +14,7 @@ struct Expresion
     string fin;
 } e;
 
+bool analizarExp(string cuerpo);
 
 int main(int argc, char const *argv[])
 {
@@ -52,3 +56,82 @@ int main(int argc, char const *argv[])
     return 0;
 }
 
+bool analizarExp(string cuerpo)
+{
+    vector<string> arr;
+
+    arr.push_back("num");
+    arr.push_back("op");
+    arr.push_back("parA");
+    arr.push_back("num");
+    arr.push_back("op");
+    arr.push_back("num");
+    arr.push_back("op");
+    arr.push_back("parC");
+
+    bool anteriorOp = false;   // Anterior Operador?
+    bool anteriorNum = false;  // Anterior Numero?
+    bool anteriorParA = false; // Anterior Parentesis Abierto?
+    int nParA = 0;             // Número de paréntesis abiertos
+
+    if (arr[0] == "op" || arr.back() == "op")
+    {
+        return false;
+    }
+
+    for (string tipo : arr)
+    {
+        if (tipo == "parA")
+        {
+            if (nParA < 0 || anteriorNum)
+            {
+                return false;
+            }
+            nParA++;
+            anteriorParA = true;
+            anteriorNum = false;
+            anteriorOp = false;
+        }
+        if (tipo == "parC")
+        {
+            if (anteriorParA || anteriorOp)
+            {
+                return false;
+            }
+            nParA--;
+            anteriorParA = false;
+            anteriorNum = false;
+            anteriorOp = false;
+        }
+        if (tipo == "op")
+        {
+            if (anteriorOp || anteriorParA)
+            {
+                return false;
+            }
+            anteriorOp = true;
+            anteriorNum = false;
+            anteriorParA = false;
+        }
+        if (tipo == "num")
+        {
+            if (anteriorNum)
+            {
+                return false;
+            }
+            anteriorNum = true;
+            anteriorOp = false;
+            anteriorParA = false;
+        }
+    }
+    if (anteriorParA || anteriorOp)
+    {
+        return false;
+    }
+    if (nParA != 0)
+    {
+        return false;
+    }
+
+    return true;
+}

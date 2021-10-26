@@ -7,14 +7,10 @@
 
 using namespace std;
 
-struct Expresion
-{
-    string ini;
-    string cuerpo;
-    string fin;
-} e;
 
+//^ PROTOTYPE
 bool analizarExp(vector<string> arr);
+
 
 //^ MAIN
 int main(int argc, char const *argv[])
@@ -123,6 +119,8 @@ int main(int argc, char const *argv[])
     return 0;
 }
 
+
+//^ DEFINITION
 bool analizarExp(vector<string> arr)
 {
     bool anteriorOp = false;   // Anterior Operador?

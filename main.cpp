@@ -1,4 +1,7 @@
-// ANALIZADOR ARITMETICO
+/**
+ * Analizador Aritmético
+ * Realizador por Torres Gerardo y  Nathalie Zambrano
+**/
 
 #include <iostream>
 #include <fstream>

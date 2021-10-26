@@ -105,19 +105,8 @@ int main(int argc, char const *argv[])
     return 0;
 }
 
-bool analizarExp(string cuerpo)
+bool analizarExp(vector<string> arr)
 {
-    vector<string> arr;
-
-    arr.push_back("num");
-    arr.push_back("op");
-    arr.push_back("parA");
-    arr.push_back("num");
-    arr.push_back("op");
-    arr.push_back("num");
-    arr.push_back("op");
-    arr.push_back("parC");
-
     bool anteriorOp = false;   // Anterior Operador?
     bool anteriorNum = false;  // Anterior Numero?
     bool anteriorParA = false; // Anterior Parentesis Abierto?

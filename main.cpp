@@ -14,7 +14,7 @@ struct Expresion
     string fin;
 } e;
 
-bool analizarExp(string cuerpo);
+bool analizarExp(vector<string> arr);
 
 //^ MAIN
 int main(int argc, char const *argv[])
@@ -24,12 +24,13 @@ int main(int argc, char const *argv[])
     // regex r ("(ini)\\s?(\\{)\\s?([a-zA-Z_]+\\d*)\\s?(=)\\s?((\\(?\\d+[\\+\\-\\*\\/\\^]*\\d*\\)?[\\+\\-\\*\\/\\^]?)+)\\s?(;)\\s?(\\})\\s?(fin)");
     smatch match;
 
+    vector<string> tokensExp;
+
     cout << "Ingrese una expresion: ";
     getline(cin, expresion);
 
     if (regex_search(expresion, match, r))
     {
-        cout << "\nCADENA VALIDA\n\n";
 
         ofstream archivo;
         archivo.open("Ltokens.txt", ios::out);
@@ -69,11 +70,20 @@ int main(int argc, char const *argv[])
                     {
                         archivo << cuerpo[j] << "\t\t\t\tOPERADOR ARIMETICO\n";
                         cout << cuerpo[j] << "\t\t\t\tOPERADOR ARIMETICO\n";
+                        tokensExp.push_back("op");
                     }
                     else if (cuerpo[j] == '(' or cuerpo[j] == ')')
                     {
                         archivo << cuerpo[j] << "\t\t\t\tSIMBOLO ESPECIAL\n";
                         cout << cuerpo[j] << "\t\t\t\tSIMBOLO ESPECIAL\n";
+                        if (cuerpo[j] == '(')
+                        {
+                            tokensExp.push_back("parA");
+                        }
+                        else
+                        {
+                            tokensExp.push_back("parC");
+                        }
                     }
                     else if (cuerpo[j] == ' ')
                     {
@@ -89,13 +99,22 @@ int main(int argc, char const *argv[])
                         }
                         archivo << num << "\t\t\t\tNUMERO\n";
                         cout << num << "\t\t\t\tNUMERO\n";
+                        tokensExp.push_back("num");
                         j--;
                     }
                 }
             }
         }
-
         archivo.close();
+
+        if (analizarExp(tokensExp))
+        {
+            cout << "\nCADENA VALIDA\n\n";
+        }
+        else
+        {
+            cout << "\nX CADENA NO VALIDA X\n\n";
+        }
     }
     else
     {

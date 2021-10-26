@@ -1,27 +1,14 @@
-// ANALIZADOR ARITMETICO
+// PRUEBA DE REGEX
 
-#include <iostream>
-#include <fstream>
-#include <regex>
-#include <vector>
-
+#include<iostream>
+#include<regex>
+#include<fstream>
 using namespace std;
 
-struct Expresion
-{
-    string ini;
-    string cuerpo;
-    string fin;
-} e;
-
-bool analizarExp(string cuerpo);
-
-//^ MAIN
 int main(int argc, char const *argv[])
 {
     string expresion = "";
-    regex r("(ini)\\s?(\\{)\\s?([a-zA-Z_]+\\d*)\\s?(=)\\s?(.+)\\s?(;)\\s?(\\})\\s?(fin)");
-    // regex r ("(ini)\\s?(\\{)\\s?([a-zA-Z_]+\\d*)\\s?(=)\\s?((\\(?\\d+[\\+\\-\\*\\/\\^]*\\d*\\)?[\\+\\-\\*\\/\\^]?)+)\\s?(;)\\s?(\\})\\s?(fin)");
+    regex r ("(ini)\\s?(\\{)\\s?([a-zA-Z_]+\\d*)\\s?(=)\\s?((\\(?\\s?\\d+\\s?[\\+\\-\\*\\/\\^]\\s?\\d*\\)?\\s?[\\+\\-\\*\\/\\^]?\\s?)+)\\s?(;)\\s?(\\})\\s?(fin)");
     smatch match;
 
     cout << "Ingrese una expresion: ";
@@ -36,6 +23,7 @@ int main(int argc, char const *argv[])
 
         archivo << "\t\t.:TOKENS:.\n\n";
         cout << "\t\t.:TOKENS:.\n\n";
+        // cout << match.str(5) << endl << endl;
 
         for (int i = 1; i < match.size(); i++)
         {
@@ -101,86 +89,6 @@ int main(int argc, char const *argv[])
     {
         cout << "CADENA INVALIDA\n";
     }
-
+    
     return 0;
-}
-
-bool analizarExp(string cuerpo)
-{
-    vector<string> arr;
-
-    arr.push_back("num");
-    arr.push_back("op");
-    arr.push_back("parA");
-    arr.push_back("num");
-    arr.push_back("op");
-    arr.push_back("num");
-    arr.push_back("op");
-    arr.push_back("parC");
-
-    bool anteriorOp = false;   // Anterior Operador?
-    bool anteriorNum = false;  // Anterior Numero?
-    bool anteriorParA = false; // Anterior Parentesis Abierto?
-    int nParA = 0;             // Número de paréntesis abiertos
-
-    if (arr[0] == "op" || arr.back() == "op")
-    {
-        return false;
-    }
-
-    for (string tipo : arr)
-    {
-        if (tipo == "parA")
-        {
-            if (nParA < 0 || anteriorNum)
-            {
-                return false;
-            }
-            nParA++;
-            anteriorParA = true;
-            anteriorNum = false;
-            anteriorOp = false;
-        }
-        if (tipo == "parC")
-        {
-            if (anteriorParA || anteriorOp)
-            {
-                return false;
-            }
-            nParA--;
-            anteriorParA = false;
-            anteriorNum = false;
-            anteriorOp = false;
-        }
-        if (tipo == "op")
-        {
-            if (anteriorOp || anteriorParA)
-            {
-                return false;
-            }
-            anteriorOp = true;
-            anteriorNum = false;
-            anteriorParA = false;
-        }
-        if (tipo == "num")
-        {
-            if (anteriorNum)
-            {
-                return false;
-            }
-            anteriorNum = true;
-            anteriorOp = false;
-            anteriorParA = false;
-        }
-    }
-    if (anteriorParA || anteriorOp)
-    {
-        return false;
-    }
-    if (nParA != 0)
-    {
-        return false;
-    }
-
-    return true;
 }

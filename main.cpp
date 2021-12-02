@@ -1,26 +1,32 @@
 /**
  * Analizador Aritmético
- * Realizador por Torres Gerardo y  Nathalie Zambrano
+ * Realizador por Gerardo Torres y  Nathalie Zambrano
 **/
 
 #include <iostream>
 #include <fstream>
 #include <regex>
 #include <vector>
+#include <algorithm>
+#include <string>
 
 using namespace std;
 
-//^ PROTOTYPE
+// PROTOTYPE
 bool analizarExp(vector<string> arr);
+int operadores(char op);
+int op_aritmetica(int a, int b, char op);
+int resolverExpresion(string tokens);
 
-//^ MAIN
+// MAIN
 int main(int argc, char const *argv[])
 {
     string expresion = "";
     regex r("(ini)\\s?(\\{)\\s?([a-zA-Z_]+\\d*)\\s?(=)\\s?(.+)\\s?(;)\\s?(\\})\\s?(fin)");
     smatch match;
-
     vector<string> tokensExp;
+
+    string resultado = "";
 
     cout << "Ingrese una expresion: ";
     getline(cin, expresion);
@@ -54,6 +60,7 @@ int main(int argc, char const *argv[])
             else if (i == 5)
             {
                 string cuerpo = match.str(i);
+                resultado = cuerpo;
 
                 for (int j = 0; j < cuerpo.size(); j++)
                 {
@@ -97,7 +104,9 @@ int main(int argc, char const *argv[])
 
         if (analizarExp(tokensExp))
         {
-            cout << "\nCADENA VALIDA\n\n";
+            cout << "\nCADENA VALIDA\n";
+            int r = resolverExpresion(resultado);
+            cout << "Resultado de la expresion: " << r << endl;
         }
         else
         {
@@ -112,7 +121,7 @@ int main(int argc, char const *argv[])
     return 0;
 }
 
-//^ DEFINITION
+// DEFINITION
 bool analizarExp(vector<string> arr)
 {
     bool anteriorOp = false;   // Anterior Operador?
@@ -185,4 +194,114 @@ bool analizarExp(vector<string> arr)
         return false;
     }
     return true;
+}
+
+
+int operadores(char op){
+    if(op == '+'||op == '-')
+    return 1;
+    if(op == '*'||op == '/')
+    return 2;
+    return 0;
+}
+ 
+
+int op_aritmetica(int a, int b, char op){
+    switch(op){
+        case '+': 
+            return a + b;
+        case '-': 
+            return a - b;
+        case '*': 
+            return a * b;
+        case '/': 
+            return a / b;
+    }
+}
+
+
+int resolverExpresion(string tokens){
+    // int i;
+     
+    stack <int> numeros;
+     
+    stack <char> ops;
+     
+    for(int i = 0; i < tokens.length(); i++){
+         
+        if(tokens[i] == ' ')
+            continue;
+         
+        else if(tokens[i] == '('){
+            ops.push(tokens[i]);
+        }
+         
+        else if(isdigit(tokens[i])){
+            int val = 0;
+             
+            while(i < tokens.length() &&
+                        isdigit(tokens[i]))
+            {
+                val = (val*10) + (tokens[i]-'0');
+                i++;
+            }
+             
+            numeros.push(val);
+            i--;
+        }
+         
+        else if(tokens[i] == ')')
+        {
+            while(!ops.empty() && ops.top() != '(')
+            {
+                int val2 = numeros.top();
+                numeros.pop();
+                 
+                int val1 = numeros.top();
+                numeros.pop();
+                 
+                char op = ops.top();
+                ops.pop();
+                 
+                numeros.push(op_aritmetica(val1, val2, op));
+            }
+             
+            if(!ops.empty())
+               ops.pop();
+        }
+         
+        else
+        {
+            while(!ops.empty() && operadores(ops.top())
+                                >= operadores(tokens[i])){
+                int val2 = numeros.top();
+                numeros.pop();
+                 
+                int val1 = numeros.top();
+                numeros.pop();
+                 
+                char op = ops.top();
+                ops.pop();
+                 
+                numeros.push(op_aritmetica(val1, val2, op));
+            }
+             
+            ops.push(tokens[i]);
+        }
+    }
+     
+    while(!ops.empty()){
+        int val2 = numeros.top();
+        numeros.pop();
+                 
+        int val1 = numeros.top();
+        numeros.pop();
+                 
+        char op = ops.top();
+        ops.pop();
+                 
+        numeros.push(op_aritmetica(val1, val2, op));
+    }
+     
+    return numeros.top();
 }

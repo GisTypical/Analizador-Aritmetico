@@ -7,12 +7,10 @@
 #include <fstream>
 #include <regex>
 #include <vector>
-#include <algorithm>
-#include <string>
 
 using namespace std;
 
-// PROTOTYPE
+// PROTOTIPOS
 bool analizarExp(vector<string> arr);
 int operadores(char op);
 int op_aritmetica(int a, int b, char op);
@@ -27,6 +25,7 @@ int main(int argc, char const *argv[])
     vector<string> tokensExp;
 
     string resultado = "";
+    string identificador = "";
 
     cout << "Ingrese una expresion: ";
     getline(cin, expresion);
@@ -56,6 +55,7 @@ int main(int argc, char const *argv[])
             else if (i == 3)
             {
                 archivo << match.str(i) << "\t\t\t\tIDENTIFICADOR\n";
+                identificador = match.str(i);
             }
             else if (i == 5)
             {
@@ -106,7 +106,7 @@ int main(int argc, char const *argv[])
         {
             cout << "\nCADENA VALIDA\n";
             int r = resolverExpresion(resultado);
-            cout << "Resultado de la expresion: " << r << endl;
+            cout << "Resultado de la expresion: " << identificador << " = " << r << endl;
         }
         else
         {
@@ -121,7 +121,7 @@ int main(int argc, char const *argv[])
     return 0;
 }
 
-// DEFINITION
+// DEFINICION
 bool analizarExp(vector<string> arr)
 {
     bool anteriorOp = false;   // Anterior Operador?
@@ -196,7 +196,7 @@ bool analizarExp(vector<string> arr)
     return true;
 }
 
-
+// DEFINICION
 int operadores(char op){
     if(op == '+'||op == '-')
     return 1;
@@ -205,7 +205,7 @@ int operadores(char op){
     return 0;
 }
  
-
+// DEFINICION
 int op_aritmetica(int a, int b, char op){
     switch(op){
         case '+': 
@@ -219,7 +219,7 @@ int op_aritmetica(int a, int b, char op){
     }
 }
 
-
+// DEFINICION
 int resolverExpresion(string tokens){
     // int i;
      

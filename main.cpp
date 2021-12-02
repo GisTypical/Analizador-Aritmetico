@@ -7,14 +7,17 @@
 #include <fstream>
 #include <regex>
 #include <vector>
+#include <math.h>
 
 using namespace std;
 
 // PROTOTIPOS
 bool analizarExp(vector<string> arr);
-int operadores(char op);
+int op_posicion(char op);
 int op_aritmetica(int a, int b, char op);
 int resolverExpresion(string tokens);
+string rpn(string s);
+
 
 // MAIN
 int main(int argc, char const *argv[])
@@ -24,7 +27,7 @@ int main(int argc, char const *argv[])
     smatch match;
     vector<string> tokensExp;
 
-    string resultado = "";
+    string solucion = "";
     string identificador = "";
 
     cout << "Ingrese una expresion: ";
@@ -60,7 +63,7 @@ int main(int argc, char const *argv[])
             else if (i == 5)
             {
                 string cuerpo = match.str(i);
-                resultado = cuerpo;
+                solucion = cuerpo;
 
                 for (int j = 0; j < cuerpo.size(); j++)
                 {
@@ -105,8 +108,10 @@ int main(int argc, char const *argv[])
         if (analizarExp(tokensExp))
         {
             cout << "\nCADENA VALIDA\n";
-            int r = resolverExpresion(resultado);
-            cout << "Resultado de la expresion: " << identificador << " = " << r << endl;
+            int r = resolverExpresion(solucion);
+            cout << "Solucion: " << identificador << " = " << r << endl;
+            string resultado_rpn = rpn(solucion);
+            cout << "Notacion Polaca Inversa: " << resultado_rpn << endl;
         }
         else
         {
@@ -197,32 +202,33 @@ bool analizarExp(vector<string> arr)
 }
 
 // DEFINICION
-int operadores(char op){
-    if(op == '+'||op == '-')
-    return 1;
-    if(op == '*'||op == '/')
-    return 2;
+int op_posicion(char op){
+    if(op == '+'||op == '-') {
+        return 1;
+    }
+    if(op == '*'||op == '/') {
+        return 2;
+    }
+    if (op == '^') {
+        return 3;
+    }
     return 0;
 }
  
 // DEFINICION
 int op_aritmetica(int a, int b, char op){
     switch(op){
-        case '+': 
-            return a + b;
-        case '-': 
-            return a - b;
-        case '*': 
-            return a * b;
-        case '/': 
-            return a / b;
+        case '+': return a + b;
+        case '-': return a - b;
+        case '*': return a * b;
+        case '/':  return a / b;
+        case '^': return pow(a, b);
+        default: return 0;
     }
 }
 
 // DEFINICION
-int resolverExpresion(string tokens){
-    // int i;
-     
+int resolverExpresion(string tokens){  
     stack <int> numeros;
      
     stack <char> ops;
@@ -272,8 +278,7 @@ int resolverExpresion(string tokens){
          
         else
         {
-            while(!ops.empty() && operadores(ops.top())
-                                >= operadores(tokens[i])){
+            while(!ops.empty() && op_posicion(ops.top()) >= op_posicion(tokens[i])){
                 int val2 = numeros.top();
                 numeros.pop();
                  
@@ -304,4 +309,49 @@ int resolverExpresion(string tokens){
     }
      
     return numeros.top();
+}
+
+// DEFINICION
+string rpn(string s) {
+ 
+    stack<char> pila;
+    string resultado;
+ 
+    for(int i = 0; i < s.length(); i++) {
+        char c = s[i];
+
+        if (c == ' ') {
+            continue;
+        }
+
+        if((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9'))
+            resultado += c;
+ 
+        else if(c == '(')
+            pila.push('(');
+ 
+        else if(c == ')') {
+            while(pila.top() != '(')
+            {
+                resultado += pila.top();
+                pila.pop();
+            }
+            pila.pop();
+        }
+
+        else {
+            while(!pila.empty() && op_posicion(s[i]) <= op_posicion(pila.top())) {
+                resultado += pila.top();
+                pila.pop(); 
+            }
+            pila.push(c);
+        }
+    }
+ 
+    while(!pila.empty()) {
+        resultado += pila.top();
+        pila.pop();
+    }
+ 
+    return resultado;
 }

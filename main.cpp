@@ -8,6 +8,7 @@
 #include <regex>
 #include <vector>
 #include <math.h>
+#include <stdio.h>
 
 using namespace std;
 
@@ -123,6 +124,7 @@ int main(int argc, char const *argv[])
         cout << "\nX CADENA NO VALIDA X\n\n";
     }
 
+    system("pause");
     return 0;
 }
 

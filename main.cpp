@@ -138,6 +138,7 @@ bool analizarExp(vector<string> arr)
     // Verificar que no comience con un operador
     if (arr[0] == "op" || arr.back() == "op")
     {
+        cout << "No se puede comenzar o terminar con un operador" << endl;
         return false;
     }
 
@@ -152,7 +153,7 @@ bool analizarExp(vector<string> arr)
             }
             if (anteriorNum)
             {
-                cout << "Sin operador antes del parentesis" << endl;
+                cout << "No puede haber un número antes de un parentesis abierto" << endl;
                 return false;
             }
 
@@ -170,7 +171,7 @@ bool analizarExp(vector<string> arr)
             }
             if (anteriorOp)
             {
-                cout << "Sin operador antes del parentesis" << endl;
+                cout << "No puede haber un operador antes de paréntesis" << endl;
                 return false;
             }
             nParA--;
@@ -182,12 +183,12 @@ bool analizarExp(vector<string> arr)
         {
             if (anteriorOp)
             {
-                cout << "No existe un número luego del operador" << endl;
+                cout << "No pueden haber dos operadores juntos" << endl;
                 return false;
             }
-            if (anteriorOp)
+            if (anteriorParA)
             {
-                cout << "No existe un número antes del operador" << endl;
+                cout << "No puede haber un operador luego de un paréntesis" << endl;
                 return false;
             }
             anteriorOp = true;

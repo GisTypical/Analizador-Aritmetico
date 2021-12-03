@@ -19,7 +19,6 @@ int op_aritmetica(int a, int b, char op);
 int resolverExpresion(string tokens);
 string rpn(string s);
 
-
 // MAIN
 int main(int argc, char const *argv[])
 {
@@ -146,10 +145,17 @@ bool analizarExp(vector<string> arr)
     {
         if (tipo == "parA")
         {
-            if (nParA < 0 || anteriorNum)
+            if (nParA < 0)
             {
+                cout << "Existe un parentesis cerrado antes del paréntesis abierto" << endl;
                 return false;
             }
+            if (anteriorNum)
+            {
+                cout << "Sin operador antes del parentesis" << endl;
+                return false;
+            }
+
             nParA++;
             anteriorParA = true;
             anteriorNum = false;
@@ -157,8 +163,14 @@ bool analizarExp(vector<string> arr)
         }
         if (tipo == "parC")
         {
-            if (anteriorParA || anteriorOp)
+            if (anteriorParA)
             {
+                cout << "No existe operación aritmética dentro de los paréntesis" << endl;
+                return false;
+            }
+            if (anteriorOp)
+            {
+                cout << "Sin operador antes del parentesis" << endl;
                 return false;
             }
             nParA--;
@@ -168,8 +180,14 @@ bool analizarExp(vector<string> arr)
         }
         if (tipo == "op")
         {
-            if (anteriorOp || anteriorParA)
+            if (anteriorOp)
             {
+                cout << "No existe un número luego del operador" << endl;
+                return false;
+            }
+            if (anteriorOp)
+            {
+                cout << "No existe un número antes del operador" << endl;
                 return false;
             }
             anteriorOp = true;
@@ -180,6 +198,7 @@ bool analizarExp(vector<string> arr)
         {
             if (anteriorNum)
             {
+                cout << "No existe un operador entre los números" << endl;
                 return false;
             }
             anteriorNum = true;
@@ -204,136 +223,158 @@ bool analizarExp(vector<string> arr)
 }
 
 // DEFINICION
-int op_posicion(char op){
-    if(op == '+'||op == '-') {
+int op_posicion(char op)
+{
+    if (op == '+' || op == '-')
+    {
         return 1;
     }
-    if(op == '*'||op == '/') {
+    if (op == '*' || op == '/')
+    {
         return 2;
     }
-    if (op == '^') {
+    if (op == '^')
+    {
         return 3;
     }
     return 0;
 }
- 
+
 // DEFINICION
-int op_aritmetica(int a, int b, char op){
-    switch(op){
-        case '+': return a + b;
-        case '-': return a - b;
-        case '*': return a * b;
-        case '/':  return a / b;
-        case '^': return pow(a, b);
-        default: return 0;
+int op_aritmetica(int a, int b, char op)
+{
+    switch (op)
+    {
+    case '+':
+        return a + b;
+    case '-':
+        return a - b;
+    case '*':
+        return a * b;
+    case '/':
+        return a / b;
+    case '^':
+        return pow(a, b);
+    default:
+        return 0;
     }
 }
 
 // DEFINICION
-int resolverExpresion(string tokens){  
-    stack <int> numeros;
-     
-    stack <char> ops;
-     
-    for(int i = 0; i < tokens.length(); i++){
-         
-        if(tokens[i] == ' ')
+int resolverExpresion(string tokens)
+{
+    stack<int> numeros;
+
+    stack<char> ops;
+
+    for (int i = 0; i < tokens.length(); i++)
+    {
+
+        if (tokens[i] == ' ')
             continue;
-         
-        else if(tokens[i] == '('){
+
+        else if (tokens[i] == '(')
+        {
             ops.push(tokens[i]);
         }
-         
-        else if(isdigit(tokens[i])){
+
+        else if (isdigit(tokens[i]))
+        {
             int val = 0;
-             
-            while(i < tokens.length() &&
-                        isdigit(tokens[i]))
+
+            while (i < tokens.length() &&
+                   isdigit(tokens[i]))
             {
-                val = (val*10) + (tokens[i]-'0');
+                val = (val * 10) + (tokens[i] - '0');
                 i++;
             }
-             
+
             numeros.push(val);
             i--;
         }
-         
-        else if(tokens[i] == ')')
+
+        else if (tokens[i] == ')')
         {
-            while(!ops.empty() && ops.top() != '(')
+            while (!ops.empty() && ops.top() != '(')
             {
                 int val2 = numeros.top();
                 numeros.pop();
-                 
+
                 int val1 = numeros.top();
                 numeros.pop();
-                 
+
                 char op = ops.top();
                 ops.pop();
-                 
+
                 numeros.push(op_aritmetica(val1, val2, op));
             }
-             
-            if(!ops.empty())
-               ops.pop();
+
+            if (!ops.empty())
+                ops.pop();
         }
-         
+
         else
         {
-            while(!ops.empty() && op_posicion(ops.top()) >= op_posicion(tokens[i])){
+            while (!ops.empty() && op_posicion(ops.top()) >= op_posicion(tokens[i]))
+            {
                 int val2 = numeros.top();
                 numeros.pop();
-                 
+
                 int val1 = numeros.top();
                 numeros.pop();
-                 
+
                 char op = ops.top();
                 ops.pop();
-                 
+
                 numeros.push(op_aritmetica(val1, val2, op));
             }
-             
+
             ops.push(tokens[i]);
         }
     }
-     
-    while(!ops.empty()){
+
+    while (!ops.empty())
+    {
         int val2 = numeros.top();
         numeros.pop();
-                 
+
         int val1 = numeros.top();
         numeros.pop();
-                 
+
         char op = ops.top();
         ops.pop();
-                 
+
         numeros.push(op_aritmetica(val1, val2, op));
     }
-     
+
     return numeros.top();
 }
 
 // DEFINICION
-string rpn(string s) {
- 
+string rpn(string s)
+{
+
     stack<char> pila;
     string resultado;
- 
-    for(int i = 0; i < s.length(); i++) {
+
+    for (int i = 0; i < s.length(); i++)
+    {
         char c = s[i];
 
-        if (c == ' ') {
+        if (c == ' ')
+        {
             continue;
         }
 
-        if((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9'))
+        if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9'))
             resultado += c;
- 
-        else if(c == '(')
+
+        else if (c == '(')
             pila.push('(');
- 
-        else if(c == ')') {
-            while(pila.top() != '(')
+
+        else if (c == ')')
+        {
+            while (pila.top() != '(')
             {
                 resultado += pila.top();
                 pila.pop();
@@ -341,19 +382,22 @@ string rpn(string s) {
             pila.pop();
         }
 
-        else {
-            while(!pila.empty() && op_posicion(s[i]) <= op_posicion(pila.top())) {
+        else
+        {
+            while (!pila.empty() && op_posicion(s[i]) <= op_posicion(pila.top()))
+            {
                 resultado += pila.top();
-                pila.pop(); 
+                pila.pop();
             }
             pila.push(c);
         }
     }
- 
-    while(!pila.empty()) {
+
+    while (!pila.empty())
+    {
         resultado += pila.top();
         pila.pop();
     }
- 
+
     return resultado;
 }
